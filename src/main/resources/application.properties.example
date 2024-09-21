@@ -1,0 +1,9 @@
+spring.application.name=tgbot
+bot.token=token
+bot.username=bot username
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.password=password
+spring.datasource.username=username
+spring.datasource.url=url
+spring.jpa.hibernate.ddl-auto=update
