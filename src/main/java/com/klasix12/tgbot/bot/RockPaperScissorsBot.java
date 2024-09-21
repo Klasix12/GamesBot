@@ -1,19 +1,18 @@
 package com.klasix12.tgbot.bot;
 
 import com.klasix12.tgbot.service.RockPaperScissorsService;
-import com.klasix12.tgbot.service.impl.RockPaperScissorsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendDice;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Dice;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ public class RockPaperScissorsBot extends TelegramLongPollingBot {
         super(botToken);
         this.botUsername = botUsername;
         this.rockPaperScissorsService = rockPaperScissorsService;
+        registerBotCommand();
     }
 
     @Override
@@ -49,15 +49,30 @@ public class RockPaperScissorsBot extends TelegramLongPollingBot {
         String messageText = update.getMessage().getText();
         Message message = update.getMessage();
         User user = update.getMessage().getFrom();
-        switch (messageText) {
-            case START, INFO -> sendReplyMessage(message, RPS_rules);
-            default -> {
-                if (FIGURES.contains(messageText)) {
-                    String text = rockPaperScissorsService.rockPaperScissorsGame(messageText, user);
-                    sendReplyMessage(message, text);
-                }
-            }
+        if (isGetInfoCommand(messageText)) {
+            sendReplyMessage(message, RPS_rules);
+        } else if (FIGURES.contains(messageText)) {
+            String text = rockPaperScissorsService.rockPaperScissorsGame(messageText, user);
+            sendReplyMessage(message, text);
         }
+    }
+
+    public void registerBotCommand() {
+        List<BotCommand> botCommandList = new ArrayList<>();
+        botCommandList.add(new BotCommand("/info", "Получить информацию"));
+
+        try {
+            this.execute(new SetMyCommands(botCommandList, new BotCommandScopeDefault(), null));
+        } catch (TelegramApiException e) {
+            LOG.error(e.getMessage());
+        }
+    }
+
+    public boolean isGetInfoCommand(String messageText) {
+        return messageText.equals(START) ||
+                messageText.equals(INFO) ||
+                messageText.equals(START + "@" + getBotUsername()) ||
+                messageText.equals(INFO + "@" + getBotUsername());
     }
 
     @Override
