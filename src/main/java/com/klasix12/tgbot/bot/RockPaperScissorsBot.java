@@ -46,6 +46,9 @@ public class RockPaperScissorsBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        if (!update.hasMessage() || !update.getMessage().hasText()) {
+            return;
+        }
         String messageText = update.getMessage().getText();
         Message message = update.getMessage();
         User user = update.getMessage().getFrom();
