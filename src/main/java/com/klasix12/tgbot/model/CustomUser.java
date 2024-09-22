@@ -15,6 +15,9 @@ import lombok.NoArgsConstructor;
 public class CustomUser {
     @Id
     private long id;
-    private int wins;
-    private int loses;
+    private String username;
+    private int RPSwins;
+    private int RPSloses;
+    private int rouletteWins;
+    private int rouletteLoses;
 }
