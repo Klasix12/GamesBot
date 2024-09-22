@@ -92,8 +92,11 @@ public class GameBot extends TelegramLongPollingBot {
                 return;
             }
             chatPermissions.setCanSendMessages(false);
-            RestrictChatMember restrictChatMember = RestrictChatMember.builder().chatId(message.getChatId()).userId(message.getFrom().getId()).permissions(chatPermissions).useIndependentChatPermissions(true).build();
-
+            RestrictChatMember restrictChatMember = RestrictChatMember.builder()
+                    .chatId(message.getChatId())
+                    .userId(message.getFrom().getId())
+                    .permissions(chatPermissions)
+                    .useIndependentChatPermissions(true).build();
             long muteUntil = message.getDate() + 60;
             restrictChatMember.setUntilDate((int) muteUntil);
             execute(restrictChatMember);
@@ -109,10 +112,38 @@ public class GameBot extends TelegramLongPollingBot {
         try {
             ChatMember chatMember = execute(getChatMember);
             if (chatMember.getStatus().equals("member")) {
-                return ChatPermissions.builder().canSendMessages(true).canSendAudios(true).canSendDocuments(true).canSendPhotos(true).canSendVideos(true).canSendVideoNotes(true).canSendVoiceNotes(true).canSendPolls(true).canSendOtherMessages(true).canAddWebPagePreviews(true).canChangeInfo(true).canInviteUsers(true).canPinMessages(true).canManageTopics(true).build();
+                return ChatPermissions.builder()
+                        .canSendMessages(true)
+                        .canSendAudios(true)
+                        .canSendDocuments(true)
+                        .canSendPhotos(true)
+                        .canSendVideos(true)
+                        .canSendVideoNotes(true)
+                        .canSendVoiceNotes(true)
+                        .canSendPolls(true)
+                        .canSendOtherMessages(true)
+                        .canAddWebPagePreviews(true)
+                        .canChangeInfo(true)
+                        .canInviteUsers(true)
+                        .canPinMessages(true)
+                        .canManageTopics(true).build();
             } else if (chatMember.getStatus().equals("restricted")) {
                 ChatMemberRestricted restrictedMember = (ChatMemberRestricted) chatMember;
-                return ChatPermissions.builder().canSendMessages(restrictedMember.getCanSendMessages()).canSendAudios(restrictedMember.getCanSendAudios()).canSendDocuments(restrictedMember.getCanSendDocuments()).canSendPhotos(restrictedMember.getCanSendPhotos()).canSendVideos(restrictedMember.getCanSendVideos()).canSendVideoNotes(restrictedMember.getCanSendVideoNotes()).canSendVoiceNotes(restrictedMember.getCanSendVoiceNotes()).canSendPolls(restrictedMember.getCanSendPolls()).canSendOtherMessages(restrictedMember.getCanSendOtherMessages()).canAddWebPagePreviews(restrictedMember.getCanAddWebpagePreviews()).canChangeInfo(restrictedMember.getCanChangeInfo()).canInviteUsers(restrictedMember.getCanInviteUsers()).canPinMessages(restrictedMember.getCanPinMessages()).canManageTopics(restrictedMember.getCanManageTopics()).build();
+                return ChatPermissions.builder()
+                        .canSendMessages(restrictedMember.getCanSendMessages())
+                        .canSendAudios(restrictedMember.getCanSendAudios())
+                        .canSendDocuments(restrictedMember.getCanSendDocuments())
+                        .canSendPhotos(restrictedMember.getCanSendPhotos())
+                        .canSendVideos(restrictedMember.getCanSendVideos())
+                        .canSendVideoNotes(restrictedMember.getCanSendVideoNotes())
+                        .canSendVoiceNotes(restrictedMember.getCanSendVoiceNotes())
+                        .canSendPolls(restrictedMember.getCanSendPolls())
+                        .canSendOtherMessages(restrictedMember.getCanSendOtherMessages())
+                        .canAddWebPagePreviews(restrictedMember.getCanAddWebpagePreviews())
+                        .canChangeInfo(restrictedMember.getCanChangeInfo())
+                        .canInviteUsers(restrictedMember.getCanInviteUsers())
+                        .canPinMessages(restrictedMember.getCanPinMessages())
+                        .canManageTopics(restrictedMember.getCanManageTopics()).build();
             }
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
@@ -134,7 +165,9 @@ public class GameBot extends TelegramLongPollingBot {
     }
 
     private boolean isGetInfoCommand(String messageText) {
-        return messageText.equals(START) || messageText.equals(INFO) || messageText.equals(START + "@" + getBotUsername()) || messageText.equals(INFO + "@" + getBotUsername());
+        return messageText.equals(START) || messageText.equals(INFO) ||
+                messageText.equals(START + "@" + getBotUsername()) ||
+                messageText.equals(INFO + "@" + getBotUsername());
     }
 
     private boolean isGetRouletteCommand(String messageText) {
